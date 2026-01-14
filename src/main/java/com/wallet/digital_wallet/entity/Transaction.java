@@ -41,12 +41,14 @@ public class Transaction {
     private BigDecimal amount;
 
     @Column(precision = 15, scale = 2)
+    @Builder.Default
     private BigDecimal fee =BigDecimal.ZERO;
 
     @Enumerated(EnumType.STRING)
     private TransactionType type;
 
     @Enumerated(EnumType.STRING)
+    @Builder.Default
     private TransactionStatus status = TransactionStatus.PENDING;
 
     private String description;

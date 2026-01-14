@@ -30,6 +30,7 @@ public class Merchant {
     private MerchantCategory category;
 
     @Column(nullable = false)
+    @Builder.Default
     private String status = "ACTIVE";
 
     @Column(name = "created_at", updatable = false)

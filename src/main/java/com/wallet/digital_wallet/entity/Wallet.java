@@ -24,9 +24,11 @@ public class Wallet {
     private String walletNumber;
 
     @Column(nullable = false, precision = 15, scale = 2)
+    @Builder.Default
     private BigDecimal balance = BigDecimal.ZERO;
 
     @Column(name = "daily_limit", nullable = false, precision = 15, scale = 2)
+    @Builder.Default
     private BigDecimal dailyLimit = new BigDecimal("10000");
 
     @OneToOne
