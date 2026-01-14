@@ -1,5 +1,6 @@
 package com.wallet.digital_wallet.exception;
 
+import com.wallet.digital_wallet.dto.response.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
