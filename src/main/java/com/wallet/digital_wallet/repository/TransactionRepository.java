@@ -15,7 +15,7 @@ import java.util.List;
 
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
-    Optional<Transaction> findByTransactionId(Long transactionId);
+    Optional<Transaction> findByTransactionId(String transactionId);
     Optional<Transaction> findByReferenceNumber(String referenceNumber);
 
     @Query("SELECT t FROM Transaction t WHERE t.fromWallet.id = :walletId OR t.toWallet.id = :walletId")
@@ -24,7 +24,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     @Query("SELECT t FROM Transaction t WHERE t.merchant.id = :merchantId")
     Page<Transaction> findByMerchantId(@Param("merchantId") Long merchantId, Pageable pageable);
 
-    @Query("SELECT t FROM Transaction t WHERE (t.fromWallet.id = :userId OR t.toWallet.id = userId) AND t.createdAt BETWEEN :start AND :end")
+    @Query("SELECT t FROM Transaction t WHERE (t.fromWallet.id = :userId OR t.toWallet.id = :userId) AND t.createdAt BETWEEN :start AND :end")
     Page<Transaction> findByUserIdAndType(@Param("userId") Long userId, @Param("type") TransactionType type, Pageable pageable);
 
     @Query("SELECT t FROM Transaction t WHERE (t.fromWallet.id = :userId OR t.toWallet.id = :userId) AND t.createdAt BETWEEN :start AND :end")
