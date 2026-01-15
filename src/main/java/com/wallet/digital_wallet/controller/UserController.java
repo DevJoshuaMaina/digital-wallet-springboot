@@ -43,7 +43,7 @@ public class UserController {
         return ResponseEntity.ok(ApiResponse.success("Success", userMapper.toResponse(user)));
     }
 
-    @GetMapping
+    @GetMapping("/username/{username}")
     @Operation(summary = "Get user by username")
     public ResponseEntity<ApiResponse<UserResponse>> getUserByUsername(@PathVariable String username) {
         User user = userService.getUserByUsername(username);
