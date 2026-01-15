@@ -21,7 +21,7 @@ public class WalletService {
                 .orElseThrow(() -> new ResourceNotFoundException("Wallet", "id", id));
     }
 
-    public Wallet getWalletByUSerId(Long userId) {
+    public Wallet getWalletByUserId(Long userId) {
         return walletRepository.findByUserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Wallet", "userId", userId));
     }
