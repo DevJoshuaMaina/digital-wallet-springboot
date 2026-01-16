@@ -6,6 +6,15 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+/**
+ * Request payload for creating or updating a merchant.
+ *
+ * <p>Used by:
+ * <ul>
+ *   <li>{@code POST /api/v1/merchants}</li>
+ *   <li>{@code PUT /api/v1/merchants/{id}}</li>
+ * </ul>
+ */
 @Data
 public class CreateMerchantRequest{
     @NotBlank(message = "Merchant name is required")

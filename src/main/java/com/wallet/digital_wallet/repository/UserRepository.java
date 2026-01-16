@@ -10,11 +10,42 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+/**
+ * Repository for {@link User} persistence operations.
+ *
+ * <p>Documentation requirements:
+ * <ul>
+ *   <li>Uses Spring Data JPA derived queries</li>
+ *   <li>Primary key type is {@link Long}</li>
+ *   <li>Provides lookup by username/email and search support</li>
+ * </ul>
+ */
 @Repository
-public interface UserRepository extends JpaRepository<User, Integer> {
+public interface UserRepository extends JpaRepository<User, Long> {
+    /**
+     * Finds a user by username.
+     *
+     * @param username username
+     * @return optional user
+     */
     Optional<User> findByUsername(String username);
+
     Optional<User> findByEmail(String email);
+
+    /**
+     * Checks if a username already exists.
+     *
+     * @param username username to check
+     * @return true if exists
+     */
     boolean existsByUsername(String username);
+
+    /**
+     * Checks if an email already exists.
+     *
+     * @param email email to check
+     * @return true if exists
+     */
     boolean existsByEmail(String email);
 
     @Query("SELECT u FROM User u WHERE u.username LIKE %:query% OR u.email LIKE %:query%")

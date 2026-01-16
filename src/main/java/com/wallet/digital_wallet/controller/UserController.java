@@ -20,6 +20,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * REST controller for user management.
+ *
+ * <p>Base path: {@code /api/v1/users}
+ * <p>Responsible for user registration, retrieval, update, listing, search, and deactivation.
+ */
 @RestController
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
@@ -43,7 +49,7 @@ public class UserController {
         return ResponseEntity.ok(ApiResponse.success("Success", userMapper.toResponse(user)));
     }
 
-    @GetMapping
+    @GetMapping("/username/{username}")
     @Operation(summary = "Get user by username")
     public ResponseEntity<ApiResponse<UserResponse>> getUserByUsername(@PathVariable String username) {
         User user = userService.getUserByUsername(username);

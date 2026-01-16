@@ -24,6 +24,17 @@ import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * Service responsible for business transaction flows: transfers and merchant payments.
+ *
+ * <p>Documentation requirements:
+ * <ul>
+ *   <li>Validates PIN for debit operations</li>
+ *   <li>Ensures sufficient balance before debiting</li>
+ *   <li>Uses {@link TransactionStatus#SUCCESS} / FAILED (simplified)</li>
+ *   <li>Transactional boundary ensures atomic balance updates</li>
+ * </ul>
+ */
 @Service
 @RequiredArgsConstructor @Slf4j
 public class TransactionService {
@@ -33,6 +44,22 @@ public class TransactionService {
     private final MerchantService merchantService;
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
+    /**
+     * Executes a peer-to-peer transfer from one wallet to another user (by username).
+     *
+     * Business rules:
+     * <ul>
+     *   <li>Sender wallet must exist</li>
+     *   <li>Receiver user must exist and have a wallet</li>
+     *   <li>Sender must provide correct PIN</li>
+     *   <li>Sender must have sufficient balance</li>
+     *   <li>Cannot transfer to self</li>
+     *   <li>Amount must not exceed sender dailyLimit (simplified rule)</li>
+     * </ul>
+     *
+     * @param request transfer request
+     * @return created transaction record
+     */
     @Transactional
     public Transaction transfer(TransferRequest request) {
         Wallet fromWallet = walletService.getWalletById(request.getFromWalletId());
@@ -48,6 +75,7 @@ public class TransactionService {
             throw new InsufficientBalanceException("Insufficient balance");
         }
 
+        // Update balances
         fromWallet.debit(request.getAmount());
         toWallet.credit(request.getAmount());
 
@@ -67,6 +95,21 @@ public class TransactionService {
         return txn;
     }
 
+    /**
+     * Executes a merchant payment from a wallet to a merchant (by merchant code).
+     *
+     * Business rules:
+     * <ul>
+     *   <li>Wallet must exist</li>
+     *   <li>Merchant must exist</li>
+     *   <li>PIN must match wallet owner</li>
+     *   <li>Sufficient funds required</li>
+     *   <li>Amount must not exceed dailyLimit (simplified rule)</li>
+     * </ul>
+     *
+     * @param request merchant payment request
+     * @return created transaction record
+     */
     @Transactional
     public Transaction payMerchant(MerchantPaymentRequest request) {
         Wallet fromWallet = walletService.getWalletById(request.getFromWalletId());
@@ -97,6 +140,12 @@ public class TransactionService {
         return txn;
     }
 
+    /**
+     * Returns a transaction by database ID.
+     *
+     * @param transactionId transaction database ID
+     * @return transaction entity
+     */
     public Transaction getTransactionById(Long id) {
         return transactionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Transaction", "id", id));
@@ -107,6 +156,13 @@ public class TransactionService {
                 .orElseThrow(() -> new ResourceNotFoundException("Transaction", "reference", ref));
     }
 
+    /**
+     * Returns paginated transactions for a user (sender or receiver).
+     *
+     * @param userId user ID
+     * @param pageable pagination
+     * @return page of transactions
+     */
     public Page<Transaction> getUserTransactions(Long userId, Pageable pageable) {
         return transactionRepository.findByWalletId(userId, pageable);
     }
@@ -121,6 +177,19 @@ public class TransactionService {
         return getUserTransactions(userId, pageable);
     }
 
+    /**
+     * Computes simple transaction statistics for a user.
+     *
+     * <p>Returns totals for:
+     * <ul>
+     *   <li>totalSent (money debited from user's wallet)</li>
+     *   <li>totalReceived (money credited to user's wallet from transfers/topups)</li>
+     *   <li>count</li>
+     * </ul>
+     *
+     * @param userId user ID
+     * @return stats map
+     */
     public Map<String, Object> getTransactionStats(Long userId) {
         // Simplified stats; in production, use custom queries
         Page<Transaction> txns = getUserTransactions(userId, Pageable.unpaged());

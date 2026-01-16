@@ -23,6 +23,12 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.Map;
 
+/**
+ * REST controller for transaction operations (transfers and merchant payments).
+ *
+ * <p>Base path: {@code /api/v1/transactions}
+ * <p>Provides endpoints for initiating transactions and viewing transaction history.
+ */
 @RestController
 @RequestMapping("/api/v1/transactions")
 @RequiredArgsConstructor

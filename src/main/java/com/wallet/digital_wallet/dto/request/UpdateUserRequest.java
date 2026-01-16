@@ -4,6 +4,11 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
+/**
+ * Request payload for updating user profile fields.
+ *
+ * <p>Used by: {@code PUT /api/v1/users/{id}}
+ */
 @Data
 public class UpdateUserRequest {
     @NotBlank(message = "Full name is required")

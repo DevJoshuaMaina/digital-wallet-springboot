@@ -13,9 +13,33 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.List;
 
+/**
+ * Repository for {@link Transaction} persistence operations.
+ *
+ * <p>Documentation requirements:
+ * <ul>
+ *   <li>Primary key type is {@link Long}</li>
+ *   <li>Supports lookup by referenceNumber</li>
+ *   <li>Supports user transaction history retrieval using wallet user relationships</li>
+ *   <li>Supports merchant transaction history retrieval</li>
+ * </ul>
+ */
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
+    /**
+     * Finds transaction by transaction ID
+
+     * @param transactionId transaction id
+     * @return optional transaction
+     */
     Optional<Transaction> findByTransactionId(String transactionId);
+
+    /**
+     * Finds transaction by reference number.
+     *
+     * @param referenceNumber reference number
+     * @return optional transaction
+     */
     Optional<Transaction> findByReferenceNumber(String referenceNumber);
 
     @Query("SELECT t FROM Transaction t WHERE t.fromWallet.id = :walletId OR t.toWallet.id = :walletId")

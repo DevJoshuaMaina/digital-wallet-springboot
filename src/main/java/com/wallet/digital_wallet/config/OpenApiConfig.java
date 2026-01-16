@@ -9,6 +9,16 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
 
+/**
+ * OpenAPI/Swagger configuration for the Digital Wallet System.
+ *
+ * <p>This config provides high-level API metadata exposed via:
+ * <ul>
+ *   <li>/v3/api-docs</li>
+ *   <li>/swagger-ui/index.html</li>
+ * </ul>
+ */
+
 @Configuration
 public class OpenApiConfig {
 

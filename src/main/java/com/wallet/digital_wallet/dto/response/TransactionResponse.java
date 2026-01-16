@@ -8,8 +8,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
+/**
+ * Transaction response DTO.
+ *
+ * <p>Returned by transaction endpoints. Fields like {@code toUsername} and {@code merchantName}
+ * may be null depending on transaction type.
+ */
 @Data @Builder @AllArgsConstructor @NoArgsConstructor
 public class TransactionResponse {
     private Long id;
@@ -23,5 +29,9 @@ public class TransactionResponse {
     private TransactionType type;
     private TransactionStatus status;
     private String description;
-    private LocalDate timestamp;
+
+    /**
+     * Transaction timestamp in ISO-8601 format.
+     */
+    private LocalDateTime timestamp;
 }
