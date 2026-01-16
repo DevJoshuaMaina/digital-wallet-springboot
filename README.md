@@ -56,4 +56,4 @@ Update src/main/resources/application.yml with your database credentials
 Import postman/Digital_Wallet_API.postman_collection.json into Postman
 
 ## Author
-Joshua Maina
+Joshua Maina Njomo
