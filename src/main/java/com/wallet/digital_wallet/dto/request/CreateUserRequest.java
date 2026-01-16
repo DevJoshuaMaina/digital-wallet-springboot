@@ -1,0 +1,37 @@
+package com.wallet.digital_wallet.dto.request;
+
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+import lombok.Data;
+import org.springframework.data.repository.query.Param;
+
+/**
+ * Request payload for creating a new user.
+ *
+ * <p>Used by: {@code POST /api/v1/users}
+ */
+@Data
+public class CreateUserRequest {
+    @NotBlank(message = "Username is required")
+    @Size(min = 3, max = 50, message = "Username must be between 3 and 50 characters")
+    private String username;
+
+    @NotBlank(message = "Email is required")
+    @Email(message = "Invalid email format")
+    private String email;
+
+    @NotBlank(message = "Full name is required")
+    private String fullName;
+
+    private String phoneNumber;
+
+    /**
+     * PIN for wallet operations.
+     * Stored as a hash, never stored raw.
+     */
+    @NotBlank(message = "PIN is required")
+    @Pattern(regexp = "^[0-9]{4,6}$", message = "PIN must be 4-6 digits")
+    private String pin;
+}

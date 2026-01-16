@@ -1,0 +1,35 @@
+package com.wallet.digital_wallet.dto.response;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.data.domain.Page;
+
+import java.util.List;
+
+/**
+ * Pagination wrapper returned for paged endpoints.
+ *
+ * <p>Provides metadata plus items list to clients.
+ */
+@Data @Builder @AllArgsConstructor @NoArgsConstructor
+public class PagedResponse<T> {
+    private List<T> content;
+    private int page;
+    private int size;
+    private long totalElements;
+    private long totalPages;
+    private boolean last;
+
+    public static <T> PagedResponse<T> fromPage(Page<T> page) {
+        return PagedResponse.<T>builder()
+                .content(page.getContent())
+                .page(page.getNumber())
+                .size(page.getSize())
+                .totalElements(page.getTotalElements())
+                .totalPages(page.getTotalElements())
+                .last(page.isLast())
+                .build();
+    }
+}

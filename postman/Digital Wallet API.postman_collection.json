@@ -1,0 +1,735 @@
+{
+  "info": {
+    "_postman_id": "5a0482ff-3a2d-43de-b583-3c52e9621525",
+    "name": "Digital Wallet API",
+    "description": "Postman collection for testing the Digital Wallet System API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "50477992",
+    "_collection_link": "https://go.postman.co/collection/50477992-5a0482ff-3a2d-43de-b583-3c52e9621525?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Create User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    var response = pm.response.json();",
+                  "    pm.environment.set(\"user_id\", response.data.id);",
+                  "    pm.environment.set(\"wallet_id\", response.data.wallet.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"john_doe\",\n    \"email\": \"john@example.com\",\n    \"fullName\": \"John Doe\",\n    \"phoneNumber\": \"+1234567890\",\n    \"pin\": \"1234\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/users/{{user_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "{{user_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User by Username",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/users/username/john_doe",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "username",
+                "john_doe"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"fullName\": \"John Updated\",\n    \"email\": \"john.updated@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/{{user_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "{{user_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Deactivate User",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/users/{{user_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "{{user_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/users?page=0&size=10",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Search Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/users/search?query=john&page=0&size=10",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "query",
+                  "value": "john"
+                },
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Wallets",
+      "item": [
+        {
+          "name": "Get Wallet by User ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/wallets/user/{{user_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "wallets",
+                "user",
+                "{{user_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Wallet by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/wallets/{{wallet_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "wallets",
+                "{{wallet_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Money to Wallet",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"amount\": 500.00\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/wallets/{{wallet_id}}/add-money",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "wallets",
+                "{{wallet_id}}",
+                "add-money"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Wallet Balance",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/wallets/{{wallet_id}}/balance",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "wallets",
+                "{{wallet_id}}",
+                "balance"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Set Daily Limit",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/wallets/{{wallet_id}}/daily-limit?limit=15000.00",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "wallets",
+                "{{wallet_id}}",
+                "daily-limit"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "15000.00"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Transactions",
+      "item": [
+        {
+          "name": "Transfer Money",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var response = pm.response.json();",
+                  "    pm.environment.set(\"transaction_id\", response.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"fromWalletId\": {{wallet_id}},\n    \"toUsername\": \"jane_doe\",\n    \"amount\": 100.00,\n    \"description\": \"Test transfer\",\n    \"pin\": \"1234\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/transactions/transfer",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "transactions",
+                "transfer"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Merchant Payment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"fromWalletId\": {{wallet_id}},\n    \"merchantCode\": \"MERCHANT1\",\n    \"amount\": 50.00,\n    \"description\": \"Test payment\",\n    \"pin\": \"1234\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/transactions/merchant-payment",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "transactions",
+                "merchant-payment"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Transaction by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/transactions/{{transaction_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "transactions",
+                "{{transaction_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Transaction by Reference",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/transactions/reference/REF123456",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "transactions",
+                "reference",
+                "REF123456"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User Transactions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/transactions/user/{{user_id}}?page=0&size=10",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "transactions",
+                "user",
+                "{{user_id}}"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Filter Transactions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/transactions/user/{{user_id}}/filter?type=PEER_TRANSFER&page=0&size=10",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "transactions",
+                "user",
+                "{{user_id}}",
+                "filter"
+              ],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "PEER_TRANSFER"
+                },
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Transaction Stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/transactions/user/{{user_id}}/stats",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "transactions",
+                "user",
+                "{{user_id}}",
+                "stats"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Merchants",
+      "item": [
+        {
+          "name": "Create Merchant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    var response = pm.response.json();",
+                  "    pm.environment.set(\"merchant_id\", response.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"merchantName\": \"Test Merchant\",\n    \"email\": \"merchant@example.com\",\n    \"category\": \"FOOD_AND_BEVERAGE\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/merchants",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "merchants"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Merchants",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/merchants?page=0&size=10",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "merchants"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Merchant by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/merchants/{{merchant_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "merchants",
+                "{{merchant_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Merchant by Code",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/merchants/code/MERCHANT1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "merchants",
+                "code",
+                "MERCHANT1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Merchant",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"merchantName\": \"Updated Merchant\",\n    \"email\": \"updated@example.com\",\n    \"category\": \"RETAIL\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/merchants/{{merchant_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "merchants",
+                "{{merchant_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Merchants by Category",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/merchants/category/FOOD_AND_BEVERAGE?page=0&size=10",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "merchants",
+                "category",
+                "FOOD_AND_BEVERAGE"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Merchant Transactions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/merchants/{{merchant_id}}/transactions?page=0&size=10",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "merchants",
+                "{{merchant_id}}",
+                "transactions"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "New Request",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "user_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "wallet_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "transaction_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "merchant_id",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}
