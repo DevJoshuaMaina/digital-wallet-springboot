@@ -25,10 +25,10 @@ public class Merchant {
     /**
      * Unique merchant code used for payments (e.g., MERABC1234).
      */
-    @Column(name = "merchant_code", unique = true, nullable = false)
+    @Column(name = "merchant_code", unique = true)
     private String merchantCode;
 
-    @Column(name = "merchant_name", nullable = false)
+    @Column(name = "merchant_name")
     private String merchantName;
 
     @Column(nullable = false)
