@@ -11,8 +11,34 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Centralized exception handler for the Digital Wallet API.
+ *
+ * <p>Documentation requirements:
+ * <ul>
+ *   <li>All errors return {@code ApiResponse} wrapper with {@code success=false}</li>
+ *   <li>HTTP status codes are mapped per exception type</li>
+ *   <li>Validation errors return a field->message map in the response "data"</li>
+ * </ul>
+ *
+ * <p>Error response example:
+ * <pre>
+ * {
+ *   "success": false,
+ *   "message": "Validation failed",
+ *   "data": {
+ *     "email": "Email must be valid"
+ *   },
+ *   "timestamp": "2026-01-15T12:00:00"
+ * }
+ * </pre>
+ */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    /**
+     * Handles resource-not-found errors.
+     */
      @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ApiResponse<Void>> handleNotFound(ResourceNotFoundException ex) {
          return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -23,6 +49,9 @@ public class GlobalExceptionHandler {
                          .build());
      }
 
+    /**
+     * Handles insufficient funds errors.
+     */
      @ExceptionHandler(InsufficientBalanceException.class)
     public ResponseEntity<ApiResponse<Void>> handleInsufficientBalance(InsufficientBalanceException ex) {
          return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -33,6 +62,9 @@ public class GlobalExceptionHandler {
                          .build());
      }
 
+    /**
+     * Handles business-rule violations for transactions (e.g., invalid PIN, transfer to self).
+     */
      @ExceptionHandler(InvalidTransactionException.class)
     public ResponseEntity<ApiResponse<Void>> handleInvalidTransactionException(InvalidTransactionException ex) {
          return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -43,6 +75,9 @@ public class GlobalExceptionHandler {
                          .build());
      }
 
+    /**
+     * Handles duplicate resource errors (unique constraints or business checks).
+     */
      @ExceptionHandler(DuplicateResourceException.class)
      public ResponseEntity<ApiResponse<Void>> handleDuplicate(DuplicateResourceException ex) {
          return ResponseEntity.status(HttpStatus.CONFLICT)
@@ -53,6 +88,12 @@ public class GlobalExceptionHandler {
                          .build());
      }
 
+    /**
+     * Handles DTO validation errors (@Valid).
+     *
+     * @param ex validation exception
+     * @return ApiResponse containing field-level errors
+     */
      @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse<Map<String, String>>> handleValidation(MethodArgumentNotValidException ex) {
          Map<String, String> errors = new HashMap<>();
@@ -67,6 +108,11 @@ public class GlobalExceptionHandler {
                          .build());
      }
 
+    /**
+     * Fallback handler for unexpected exceptions.
+     *
+     * <p>Do not leak internal stack traces to clients in production.
+     */
      @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Void>> handleGeneral(Exception ex) {
          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

@@ -8,6 +8,11 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+/**
+ * User response DTO.
+ *
+ * <p>Returned by user endpoints. Contains embedded wallet summary.
+ */
 @Data @Builder @AllArgsConstructor @NoArgsConstructor
 public class UserResponse {
     private Long id;

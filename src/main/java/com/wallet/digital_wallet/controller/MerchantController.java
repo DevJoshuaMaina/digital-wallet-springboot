@@ -22,6 +22,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * REST controller for merchant management.
+ *
+ * <p>Base path: {@code /api/v1/merchants}
+ * <p>Provides merchant CRUD and merchant transaction history endpoints.
+ */
 @RestController
 @RequestMapping("/api/v1/merchants")
 @RequiredArgsConstructor

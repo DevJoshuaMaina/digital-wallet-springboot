@@ -7,11 +7,23 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+/**
+ * Standard API response wrapper.
+ *
+ * <p>All controllers return {@code ApiResponse<T>} to provide consistent response shape
+ * across success and error cases.
+ *
+ * @param <T> payload type
+ */
 @Data @Builder @AllArgsConstructor @NoArgsConstructor
 public class ApiResponse<T>{
     private boolean success;
     private String message;
     private T data;
+
+    /**
+     * Server timestamp for the response.
+     */
     private LocalDateTime timestamp;
 
     public static <T> ApiResponse<T> success(String message, T data) {

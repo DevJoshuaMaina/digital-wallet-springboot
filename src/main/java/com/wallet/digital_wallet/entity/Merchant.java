@@ -9,6 +9,11 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+/**
+ * Merchant entity represents a business that can receive payments from wallets.
+ *
+ * <p>Merchants are identified by a unique merchant code (merchantCode) used by clients during payment.
+ */
 @Entity
 @Table(name = "merchants")
 @Data @NoArgsConstructor @AllArgsConstructor @Builder
@@ -17,6 +22,9 @@ public class Merchant {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /**
+     * Unique merchant code used for payments (e.g., MERABC1234).
+     */
     @Column(name = "merchant_code", unique = true, nullable = false)
     private String merchantCode;
 
@@ -29,6 +37,10 @@ public class Merchant {
     @Enumerated(EnumType.STRING)
     private MerchantCategory category;
 
+    /**
+     * Status string (e.g., ACTIVE). Kept as String for simplicity.
+     * You can convert to enum if you want stricter typing.
+     */
     @Column(nullable = false)
     @Builder.Default
     private String status = "ACTIVE";

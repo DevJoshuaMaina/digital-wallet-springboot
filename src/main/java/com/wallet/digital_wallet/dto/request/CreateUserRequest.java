@@ -7,6 +7,11 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.springframework.data.repository.query.Param;
 
+/**
+ * Request payload for creating a new user.
+ *
+ * <p>Used by: {@code POST /api/v1/users}
+ */
 @Data
 public class CreateUserRequest {
     @NotBlank(message = "Username is required")
@@ -22,6 +27,10 @@ public class CreateUserRequest {
 
     private String phoneNumber;
 
+    /**
+     * PIN for wallet operations.
+     * Stored as a hash, never stored raw.
+     */
     @NotBlank(message = "PIN is required")
     @Pattern(regexp = "^[0-9]{4,6}$", message = "PIN must be 4-6 digits")
     private String pin;

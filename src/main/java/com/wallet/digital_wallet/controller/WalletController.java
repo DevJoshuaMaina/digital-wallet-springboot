@@ -15,6 +15,18 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 
+/**
+ * REST controller for wallet operations.
+ *
+ * <p>Base path: {@code /api/v1/wallets}
+ * <p>Supports:
+ * <ul>
+ *   <li>Wallet lookup by walletId or userId</li>
+ *   <li>Balance retrieval</li>
+ *   <li>Adding money to wallet</li>
+ *   <li>Daily transaction limit updates</li>
+ * </ul>
+ */
 @RestController
 @RequestMapping("/api/v1/wallets")
 @RequiredArgsConstructor

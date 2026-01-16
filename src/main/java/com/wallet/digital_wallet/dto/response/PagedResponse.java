@@ -8,6 +8,11 @@ import org.springframework.data.domain.Page;
 
 import java.util.List;
 
+/**
+ * Pagination wrapper returned for paged endpoints.
+ *
+ * <p>Provides metadata plus items list to clients.
+ */
 @Data @Builder @AllArgsConstructor @NoArgsConstructor
 public class PagedResponse<T> {
     private List<T> content;

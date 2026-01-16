@@ -20,6 +20,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * REST controller for user management.
+ *
+ * <p>Base path: {@code /api/v1/users}
+ * <p>Responsible for user registration, retrieval, update, listing, search, and deactivation.
+ */
 @RestController
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor

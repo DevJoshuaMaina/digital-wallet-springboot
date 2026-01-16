@@ -8,6 +8,11 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+/**
+ * Merchant response DTO.
+ *
+ * <p>Returned by merchant endpoints.
+ */
 @Data @Builder @AllArgsConstructor @NoArgsConstructor
 public class MerchantResponse {
     private Long id;

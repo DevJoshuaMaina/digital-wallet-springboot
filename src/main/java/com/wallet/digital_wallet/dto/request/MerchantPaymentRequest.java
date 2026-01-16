@@ -7,6 +7,11 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 
+/**
+ * Request payload for merchant payments.
+ *
+ * <p>Used by: {@code POST /api/v1/transactions/merchant-payment}
+ */
 @Data
 public class MerchantPaymentRequest {
     @NotNull(message = "From Wallet ID is required")
