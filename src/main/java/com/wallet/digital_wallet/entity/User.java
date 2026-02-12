@@ -58,6 +58,12 @@ public class User {
     private String pinHash;
 
     /**
+     * User's role for authorization (e.g., "USER").
+     */
+    @Builder.Default
+    private String role = "USER";
+
+    /**
      * Soft status for user accounts.
      */
     @Enumerated(EnumType.STRING)

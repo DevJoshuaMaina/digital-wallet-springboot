@@ -19,6 +19,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.wallet.digital_wallet.dto.request.LoginRequest;
+import com.wallet.digital_wallet.dto.response.JwtResponse;
+import com.wallet.digital_wallet.util.JwtUtil;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 
 /**
  * REST controller for user management.
@@ -33,6 +40,8 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     private final UserService userService;
     private final UserMapper userMapper;
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
 
     @PostMapping
     @Operation(summary = "Register new user")
@@ -41,6 +50,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.success("User created successfully", userMapper.toResponse(user)));
     }
+
 
     @GetMapping("/{id}")
     @Operation(summary = "Get user by ID")
@@ -91,5 +101,30 @@ public class UserController {
         Page<User> users = userService.searchUsers(query, pageable);
         PagedResponse<UserResponse> response = PagedResponse.fromPage(users.map(userMapper::toResponse));
         return ResponseEntity.ok(ApiResponse.success("Success", response));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+        try {
+            // Authenticate the user (throws exception on failure)
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPin())
+            );
+
+            // Load user details (fix: use correct method name)
+            User user = userService.getUserByUsername(request.getUsername());
+
+            // Generate JWT token
+            String token = jwtUtil.generateToken(user.getUsername());
+
+            // Return JWT response (adjust to match JwtResponse constructor)
+            return ResponseEntity.ok(new JwtResponse(token, user.getUsername()));
+        } catch (AuthenticationException e) {
+            // Handle invalid credentials
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or PIN");
+        } catch (Exception e) {
+            // Handle other errors (e.g., user not found)
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Login failed: " + e.getMessage());
+        }
     }
 }
