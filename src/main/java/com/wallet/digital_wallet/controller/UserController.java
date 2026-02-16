@@ -106,9 +106,6 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<Object> login(@RequestBody LoginRequest request) {
         try {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPin())
-            );
 
             User user = userService.getUserByUsername(request.getUsername());
             String token = jwtUtil.generateToken(user.getUsername());
