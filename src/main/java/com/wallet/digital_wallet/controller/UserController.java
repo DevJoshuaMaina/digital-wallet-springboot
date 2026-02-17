@@ -24,8 +24,8 @@ import com.wallet.digital_wallet.dto.response.JwtResponse;
 import com.wallet.digital_wallet.util.JwtUtil;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.Authentication;
 
 /**
  * REST controller for user management.
@@ -59,6 +59,13 @@ public class UserController {
         return ResponseEntity.ok(ApiResponse.success("Success", userMapper.toResponse(user)));
     }
 
+    @GetMapping("/me")
+    @Operation(summary = "Get current authenticated user")
+    public ResponseEntity<ApiResponse<UserResponse>> getCurrentUser(Authentication authentication) {
+        User user = userService.getUserByUsername(authentication.getName());
+        return ResponseEntity.ok(ApiResponse.success("Success", userMapper.toResponse(user)));
+    }
+
     @GetMapping("/username/{username}")
     @Operation(summary = "Get user by username")
     public ResponseEntity<ApiResponse<UserResponse>> getUserByUsername(@PathVariable String username) {
@@ -73,7 +80,7 @@ public class UserController {
         return  ResponseEntity.ok(ApiResponse.success("User updates successfully", userMapper.toResponse(user)));
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     @Operation(summary = "Deactivate user")
     public ResponseEntity<ApiResponse<UserResponse>> deactivateUser(@PathVariable Long id) {
         userService.deactivateUser(id);
@@ -104,27 +111,18 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<Object> login(@RequestBody LoginRequest request) {
         try {
-            // Authenticate the user (throws exception on failure)
-            Authentication authentication = authenticationManager.authenticate(
+            authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPin())
             );
+            String token = jwtUtil.generateToken(request.getUsername());
 
-            // Load user details (fix: use correct method name)
-            User user = userService.getUserByUsername(request.getUsername());
-
-            // Generate JWT token
-            String token = jwtUtil.generateToken(user.getUsername());
-
-            // Return JWT response (adjust to match JwtResponse constructor)
-            return ResponseEntity.ok(new JwtResponse(token, user.getUsername()));
+            return ResponseEntity.ok(ApiResponse.success("Login successful", new JwtResponse(token, request.getUsername())));
         } catch (AuthenticationException e) {
-            // Handle invalid credentials
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or PIN");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.error("Invalid username or PIN", null));
         } catch (Exception e) {
-            // Handle other errors (e.g., user not found)
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Login failed: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.error("Login failed: " + e.getMessage(), null));
         }
     }
 }

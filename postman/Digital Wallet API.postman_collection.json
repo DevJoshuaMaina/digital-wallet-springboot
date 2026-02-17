@@ -7,6 +7,16 @@
     "_exporter_id": "50477992",
     "_collection_link": "https://go.postman.co/collection/50477992-5a0482ff-3a2d-43de-b583-3c52e9621525?source=collection_link"
   },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{jwt_token}}",
+        "type": "string"
+      }
+    ]
+  },
   "item": [
     {
       "name": "Users",
@@ -30,6 +40,9 @@
           ],
           "request": {
             "method": "POST",
+            "auth": {
+              "type": "noauth"
+            },
             "header": [
               {
                 "key": "Content-Type",
@@ -47,6 +60,51 @@
               ],
               "path": [
                 "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var response = pm.response.json();",
+                  "    pm.environment.set(\"jwt_token\", response.data.token);",
+                  "    pm.environment.set(\"username\", response.data.username);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "auth": {
+              "type": "noauth"
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"john_doe\",\n    \"pin\": \"1234\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "login"
               ]
             }
           },
@@ -728,6 +786,16 @@
     },
     {
       "key": "merchant_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "jwt_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "username",
       "value": "",
       "type": "string"
     }
