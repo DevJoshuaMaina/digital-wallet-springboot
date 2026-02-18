@@ -41,7 +41,7 @@ public class User {
     /**
      * User's full name.
      */
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String fullName;
 
     /**

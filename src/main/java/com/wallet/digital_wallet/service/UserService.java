@@ -80,7 +80,8 @@ public class UserService implements UserDetailsService {
                 .dailyLimit(new BigDecimal("10000"))
                 .build();
 
-        walletRepository.save(wallet);
+        wallet = walletRepository.save(wallet);
+        user.setWallet(wallet);
         log.info("User created with ID: {}", user.getId());
         return user;
     }

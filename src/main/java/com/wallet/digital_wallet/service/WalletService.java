@@ -80,6 +80,9 @@ public class WalletService {
      */
     @Transactional
     public Wallet setDailyLimit(Long walletId, BigDecimal limit) {
+        if (limit == null || limit.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("limit must be greater than 0");
+        }
         Wallet wallet = getWalletById(walletId);
         wallet.setDailyLimit(limit);
         wallet = walletRepository.save(wallet);

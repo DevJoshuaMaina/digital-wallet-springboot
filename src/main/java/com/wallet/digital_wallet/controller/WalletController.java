@@ -1,6 +1,7 @@
 package com.wallet.digital_wallet.controller;
 
 import com.wallet.digital_wallet.dto.request.AddMoneyRequest;
+import com.wallet.digital_wallet.dto.request.SetDailyLimitRequest;
 import com.wallet.digital_wallet.dto.response.ApiResponse;
 import com.wallet.digital_wallet.dto.response.WalletResponse;
 import com.wallet.digital_wallet.entity.Wallet;
@@ -38,7 +39,7 @@ public class WalletController {
     @GetMapping("/user/{userId}")
     @Operation(summary = "Get wallet by user ID")
     public ResponseEntity<ApiResponse<WalletResponse>> getWalletByUserId(@PathVariable Long userId) {
-        Wallet wallet = walletService.getWalletById(userId);
+        Wallet wallet = walletService.getWalletByUserId(userId);
         return ResponseEntity.ok(ApiResponse.success("Success", walletMapper.toResponse(wallet)));
     }
 
@@ -67,6 +68,14 @@ public class WalletController {
     @Operation(summary = "Set daily transaction limit")
     public ResponseEntity<ApiResponse<WalletResponse>> setDailyLimit(@PathVariable Long walletId, @RequestParam BigDecimal limit) {
         Wallet wallet = walletService.setDailyLimit(walletId, limit);
+        return ResponseEntity.ok(ApiResponse.success("Daily limit updated successfully", walletMapper.toResponse(wallet)));
+    }
+
+    @PutMapping("/{walletId}/limit")
+    @Operation(summary = "Set wallet limit")
+    public ResponseEntity<ApiResponse<WalletResponse>> setLimit(@PathVariable Long walletId,
+                                                                 @Valid @RequestBody SetDailyLimitRequest request) {
+        Wallet wallet = walletService.setDailyLimit(walletId, request.getLimit());
         return ResponseEntity.ok(ApiResponse.success("Daily limit updated successfully", walletMapper.toResponse(wallet)));
     }
 }
