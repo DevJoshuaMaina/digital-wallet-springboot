@@ -1,27 +1,28 @@
 server:
-  port: 8080
+  port: ${PORT:8080}
 
 spring:
   application:
     name: digital-wallet
 
   datasource:
-    url: jdbc:postgresql://localhost:5433/digital_wallet
-    username: postgres
-    password: wrench
+    url: ${DATABASE_URL}
     driver-class-name: org.postgresql.Driver
 
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
-        format_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
     open-in-view: false
 
 logging:
   level:
-    com.wallet: DEBUG
+    com.wallet: INFO
     org.springframework.web: INFO
+
+# CORS Configuration for production
+cors:
+  allowed-origins: ${FRONTEND_URL:*}
