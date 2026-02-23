@@ -33,6 +33,7 @@ public class SecurityConfig {
                 .cors(cors -> {})
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers("/", "/actuator/health", "/actuator/info").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/users").permitAll()
                         .requestMatchers("/api/v1/users/login").permitAll()
                         .requestMatchers(

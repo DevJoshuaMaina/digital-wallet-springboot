@@ -25,6 +25,15 @@ logging:
     com.wallet: INFO
     org.springframework.web: INFO
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: never
+
 # CORS Configuration for production
 cors:
   allowed-origins: ${FRONTEND_URL:*}
