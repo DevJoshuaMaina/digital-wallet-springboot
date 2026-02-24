@@ -10,26 +10,21 @@ import java.util.Arrays;
 @Configuration
 public class CorsConfig implements WebMvcConfigurer {
 
-    @Value("${cors.allowed-origins:*}")
+    @Value("${cors.allowed-origins}")
     private String allowedOrigins;
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         String[] origins = Arrays.stream(allowedOrigins.split(","))
                 .map(String::trim)
-                .filter(origin -> !origin.isEmpty())
+                .filter(s -> !s.isEmpty())
                 .toArray(String[]::new);
 
-        var registration = registry.addMapping("/api/**")
+        registry.addMapping("/**")
+                .allowedOrigins(origins) // explicit origins only
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true)
                 .maxAge(3600);
-
-        if (origins.length == 0 || Arrays.asList(origins).contains("*")) {
-            registration.allowedOriginPatterns("*");
-        } else {
-            registration.allowedOrigins(origins);
-        }
     }
 }
