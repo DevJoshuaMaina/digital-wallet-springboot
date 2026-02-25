@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -105,6 +106,19 @@ public class GlobalExceptionHandler {
                 .body(ApiResponse.<Void>builder()
                         .success(false)
                         .message(ex.getMessage())
+                        .timestamp(LocalDateTime.now())
+                        .build());
+    }
+
+    /**
+     * Handles requests to missing endpoints/resources and returns 404.
+     */
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ApiResponse<Void>> handleNoResourceFound(NoResourceFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(ApiResponse.<Void>builder()
+                        .success(false)
+                        .message("Endpoint not found")
                         .timestamp(LocalDateTime.now())
                         .build());
     }
