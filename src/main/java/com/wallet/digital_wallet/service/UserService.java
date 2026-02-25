@@ -17,6 +17,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -166,12 +167,39 @@ public class UserService implements UserDetailsService {
         return userRepository.searchUsers(query, pageable);
     }
 
+    public User getUserByUsernameOrEmail(String usernameOrEmail) {
+        return userRepository.findByUsername(usernameOrEmail)
+                .or(() -> userRepository.findByEmail(usernameOrEmail))
+                .orElseThrow(() -> new ResourceNotFoundException("User", "username/email", usernameOrEmail));
+    }
+
+    @Transactional
+    public String authenticateForLogin(String usernameOrEmail, String rawPin) {
+        User user = getUserByUsernameOrEmail(usernameOrEmail);
+
+        if (user.getPinHash() != null && passwordEncoder.matches(rawPin, user.getPinHash())) {
+            return user.getUsername();
+        }
+
+        // Backward compatibility: migrate legacy plain-text PIN records on successful login.
+        if (user.getPinHash() != null && user.getPinHash().equals(rawPin)) {
+            user.setPinHash(passwordEncoder.encode(rawPin));
+            userRepository.save(user);
+            return user.getUsername();
+        }
+
+        throw new BadCredentialsException("Invalid username or PIN");
+    }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username)
+                .or(() -> userRepository.findByEmail(username))
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
 
-        String role = (user.getRole() != null) ? user.getRole() : "USER";
+        String role = (user.getRole() == null || user.getRole().isBlank())
+                ? "USER"
+                : user.getRole().trim().toUpperCase();
         List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role));
 
         return new org.springframework.security.core.userdetails.User(

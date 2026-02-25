@@ -113,14 +113,21 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<Object> login(@RequestBody LoginRequest request) {
         try {
-            authenticationManager.authenticate(
+            Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPin())
             );
-            String token = jwtUtil.generateToken(request.getUsername());
+            String authenticatedUsername = authentication.getName();
+            String token = jwtUtil.generateToken(authenticatedUsername);
 
-            return ResponseEntity.ok(ApiResponse.success("Login successful", new JwtResponse(token, request.getUsername())));
+            return ResponseEntity.ok(ApiResponse.success("Login successful", new JwtResponse(token, authenticatedUsername)));
         } catch (AuthenticationException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.error("Invalid username or PIN", null));
+            try {
+                String authenticatedUsername = userService.authenticateForLogin(request.getUsername(), request.getPin());
+                String token = jwtUtil.generateToken(authenticatedUsername);
+                return ResponseEntity.ok(ApiResponse.success("Login successful", new JwtResponse(token, authenticatedUsername)));
+            } catch (Exception ignored) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.error("Invalid username or PIN", null));
+            }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.error("Login failed: " + e.getMessage(), null));
         }
